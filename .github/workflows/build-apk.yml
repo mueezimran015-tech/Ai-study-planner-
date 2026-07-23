@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
+      GRADLE_OPTS: "-Djava.awt.headless=true -Dorg.gradle.daemon=false"
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -19,6 +23,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Install xvfb (Virtual Display)
+        run: sudo apt-get install -y xvfb
+
       - name: Generate Gradle Wrapper
         run: gradle wrapper
 
@@ -26,7 +33,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: xvfb-run ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
