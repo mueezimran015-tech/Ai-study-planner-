@@ -1,0 +1,6 @@
+{
+  "name": "AuraPlan",
+  "description": "Tactile Neumorphic study planner app with offline-first Room database, focus timer dial, course management, and study analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
