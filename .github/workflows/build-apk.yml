@@ -9,10 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
-      GRADLE_OPTS: "-Djava.awt.headless=true -Dorg.gradle.daemon=false"
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -23,8 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install xvfb (Virtual Display)
-        run: sudo apt-get install -y xvfb
+      - name: Disable KSP Incremental & Daemon
+        run: |
+          mkdir -p ~/.gradle
+          echo "ksp.incremental=false" >> ~/.gradle/gradle.properties
+          echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
+          echo "org.gradle.jvmargs=-Xmx2048m -Djava.awt.headless=true" >> ~/.gradle/gradle.properties
 
       - name: Generate Gradle Wrapper
         run: gradle wrapper
@@ -33,7 +33,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: xvfb-run ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
